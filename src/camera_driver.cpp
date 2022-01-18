@@ -83,6 +83,7 @@ CameraDriver::NodeInfo::NodeInfo(
     type = ENUM;
     descriptor = make_desc(n, rclcpp::ParameterType::PARAMETER_STRING);
   }
+  descriptor.dynamic_typing = true; // change needed from ROS Galactic version
 }
 
 CameraDriver::CameraDriver(const rclcpp::NodeOptions & options)

@@ -64,6 +64,7 @@ private:
   bool setDouble(const std::string & nodeName, double v);
   bool setBool(const std::string & nodeName, bool v);
   bool readParameterFile();
+  void setImageEncoding();
 
   void run();  // thread
 
@@ -113,6 +114,7 @@ private:
   uint32_t droppedCount_{0};
   rclcpp::Time lastStatusTime_;
   int qosDepth_{4};
+  std::string image_encoding_;
 };
 }  // namespace flir_spinnaker_ros2
 #endif  // FLIR_SPINNAKER_ROS2__CAMERA_DRIVER_H_

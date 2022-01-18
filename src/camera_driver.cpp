@@ -434,15 +434,12 @@ void CameraDriver::doPublish(const ImageConstPtr & im)
   imageMsg_.header.stamp = t;
   cameraInfoMsg_.header.stamp = t;
 
-  const std::string encoding =
-    sensor_msgs::image_encodings::BAYER_RGGB8;  // looks good
-
   if (pub_.getNumSubscribers() > 0 || alwaysPublish_) {
     sensor_msgs::msg::CameraInfo::UniquePtr
       cinfo(new sensor_msgs::msg::CameraInfo(cameraInfoMsg_));
     // will make deep copy. Do we need to? Probably...
     sensor_msgs::msg::Image::UniquePtr img(new sensor_msgs::msg::Image(imageMsg_));
-    bool ret = sensor_msgs::fillImage(*img, encoding, im->height_,
+    bool ret = sensor_msgs::fillImage(*img, image_encoding_, im->height_,
 				      im->width_, im->stride_, im->data_);
     if (!ret) {
       LOG_ERROR("fill image failed!");
@@ -483,8 +480,19 @@ void CameraDriver::startCamera()
       LOG_ERROR("failed to start camera!");
     } else {
       printCameraInfo();
+      setImageEncoding();
     }
   }
+}
+
+void CameraDriver::setImageEncoding()
+{
+    std::string pixel_format = driver_->getPixelFormat();
+    if(pixel_format == "Mono8") {
+      image_encoding_ = sensor_msgs::image_encodings::MONO8;
+    } else if(pixel_format == "BGR8") {
+      image_encoding_ = sensor_msgs::image_encodings::BGR8;
+    }
 }
 
 bool CameraDriver::start()
